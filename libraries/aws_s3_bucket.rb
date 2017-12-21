@@ -6,6 +6,12 @@ class AwsS3Bucket < Inspec.resource(1)
        it { should exist }
        it { should_not have_public_files }
        its('permissions') { should cmp ['FULL_CONTROL', 'READ'] }
+       # todo to cover false positives
+       # be able to tell which permissions belong to which group
+       # owner should have full access but everyone else may have other permissions etc.
+       it { should not be_accessable_by_everyone }
+       its('permissions.non_owner') { should_not include ['FULL_CONTROL','READ'] }
+       its('permissions.auth_user') { should_not include ['READ'] }
      end
    "
 
